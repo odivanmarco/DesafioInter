@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: fx.wallet
+testFramework: junit
+sourceLanguage: java
+buildTool: maven
+features: [app-name, data, data-jpa, flyway, h2, http-client, jackson-databind, java, java-application, jdbc-hikari, junit, logback, lombok, management, maven, maven-enforcer-plugin, micronaut-aot, micronaut-http-validation, netty-server, openapi, properties, readme, shade, static-resources, validation]

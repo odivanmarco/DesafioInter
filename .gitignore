@@ -1,0 +1,25 @@
+hs_err_pid*
+replay_pid*
+
+# Micronaut
+.micronaut/
+
+# Maven
+/transfer/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+transfer/aot-jar.properties
+transfer/.mvn/wrapper/maven-wrapper.jar
+transfer/mvnw
+transfer/mvnw.bat
+transfer/.mvn/wrapper/maven-wrapper.properties

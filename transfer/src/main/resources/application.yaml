@@ -1,0 +1,30 @@
+micronaut:
+  application:
+    name: remessa
+  server:
+    port: 8080
+
+datasources:
+  default:
+    url: jdbc:h2:mem:devDb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ""
+    schema-generate: NONE
+    dialect: H2
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none # Desabilitamos para o Flyway controlar o schema
+        show_sql: true
+        format_sql: true
+
+flyway:
+  datasources:
+    default:
+      enabled: true # Habilitamos o Flyway
+      locations:
+        - "classpath:db/migration"
