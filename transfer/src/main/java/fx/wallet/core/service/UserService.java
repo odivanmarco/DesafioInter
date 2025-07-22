@@ -5,4 +5,5 @@ import fx.wallet.core.domain.dto.UserResponseDTO;
 
 public interface UserService {
     UserResponseDTO createUser(UserRequestDTO userDTO);
+    UserResponseDTO getUser(String id);
 } 

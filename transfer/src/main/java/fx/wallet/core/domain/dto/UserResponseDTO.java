@@ -3,6 +3,9 @@ package fx.wallet.core.domain.dto;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import lombok.Builder;
+
+@Builder(toBuilder = true)
 public record UserResponseDTO(
         UUID id,
         String firstName,
@@ -11,6 +14,8 @@ public record UserResponseDTO(
         String email,
         String document,
         String userType,
-        BigDecimal dailyLimit
+        BigDecimal dailyLimit,
+        BigDecimal balanceBrl,
+        BigDecimal balanceUsd
 ) {
 } 
