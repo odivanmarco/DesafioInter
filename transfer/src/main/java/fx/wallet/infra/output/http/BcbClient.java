@@ -8,9 +8,11 @@ import jakarta.inject.Singleton;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 @Singleton
 public class BcbClient {
@@ -26,13 +28,14 @@ public class BcbClient {
     }
 
     public BcbQuotationResponse getQuotation(String date) {
-        String url = bcbApiUrl + "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='" + date + "'&$top=100&$format=json";
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
-
         try {
+            String encodedDate = URLEncoder.encode("'" + date + "'", StandardCharsets.UTF_8.toString());
+            var url = bcbApiUrl + "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao=" + encodedDate + "&$top=100&$format=json";
+    
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .build();
+                    
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             return objectMapper.readValue(response.body(), BcbQuotationResponse.class);
         } catch (IOException | InterruptedException e) {
