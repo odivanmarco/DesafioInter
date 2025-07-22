@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Lanuch fx-wallet-transfer",
+            "request": "launch",
+            "mainClass": "fx.wallet.Application",
+            "projectName": "fx-wallet-transfer"
+        }
+    ]
+}

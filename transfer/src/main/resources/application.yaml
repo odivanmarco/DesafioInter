@@ -1,6 +1,6 @@
 micronaut:
   application:
-    name: remessa
+    name: transfer
   server:
     port: 8080
 
@@ -28,3 +28,7 @@ flyway:
       enabled: true # Habilitamos o Flyway
       locations:
         - "classpath:db/migration"
+
+bcb:
+  client:
+    url: "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
