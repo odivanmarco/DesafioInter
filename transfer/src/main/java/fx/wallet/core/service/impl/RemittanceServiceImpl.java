@@ -18,6 +18,7 @@ import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Singleton
@@ -73,7 +74,14 @@ public class RemittanceServiceImpl implements RemittanceService {
 
 
     private void validateDailyLimit(User sender, BigDecimal amountBrl) {
-        if (sender.getDailyLimit().compareTo(amountBrl) < 0) {
+        var startOfDay = LocalDateTime.now().with(LocalTime.MIN);
+        var endOfDay = LocalDateTime.now().with(LocalTime.MAX);
+
+        var totalAmountToday = remittanceRepository.findTotalAmountBySenderAndCreatedAtBetween(
+                sender.getId(), startOfDay, endOfDay
+        );
+
+        if (totalAmountToday.add(amountBrl).compareTo(sender.getDailyLimit()) > 0) {
             throw new RemittanceValidationException("Exceeds daily limit");
         }
     }
