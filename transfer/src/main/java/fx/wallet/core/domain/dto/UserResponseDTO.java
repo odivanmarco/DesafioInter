@@ -1,5 +1,6 @@
 package fx.wallet.core.domain.dto;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public record UserResponseDTO(
@@ -9,6 +10,7 @@ public record UserResponseDTO(
         String lastName,
         String email,
         String document,
-        String userType
+        String userType,
+        BigDecimal dailyLimit
 ) {
 } 

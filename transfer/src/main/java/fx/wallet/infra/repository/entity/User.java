@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -42,4 +43,7 @@ public class User {
 
     @Column(name = "user_type", nullable = false)
     private String userType;
+
+    @Column(name = "daily_limit", nullable = false)
+    private BigDecimal dailyLimit;
 } 

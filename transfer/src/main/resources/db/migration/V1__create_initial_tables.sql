@@ -6,7 +6,8 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     document VARCHAR(14) NOT NULL UNIQUE,
-    user_type VARCHAR(2) NOT NULL
+    user_type VARCHAR(2) NOT NULL,
+    daily_limit DECIMAL(19, 2) NOT NULL
 );
 
 
