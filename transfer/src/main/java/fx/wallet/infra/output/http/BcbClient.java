@@ -29,7 +29,7 @@ public class BcbClient {
 
     public BcbQuotationResponse getQuotation(String date) {
         try {
-            String encodedDate = URLEncoder.encode("'" + date + "'", StandardCharsets.UTF_8.toString());
+            var encodedDate = URLEncoder.encode("'" + date + "'", StandardCharsets.UTF_8.toString());
             var url = bcbApiUrl + "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao=" + encodedDate + "&$top=100&$format=json";
     
             HttpRequest request = HttpRequest.newBuilder()

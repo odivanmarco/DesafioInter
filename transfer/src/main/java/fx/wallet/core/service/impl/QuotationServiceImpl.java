@@ -22,9 +22,9 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     public BcbQuotationResponse getTodayQuotation() {
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        String formattedDate = today.format(formatter);
+        var today = LocalDate.now();
+        var formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        var formattedDate = today.format(formatter);
 
         var quotationResponse = bcbClient.getQuotation(formattedDate);
 
