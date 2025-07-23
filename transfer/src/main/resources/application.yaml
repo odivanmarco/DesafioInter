@@ -3,6 +3,13 @@ micronaut:
     name: transfer
   server:
     port: 8080
+  data:
+    access:
+      strict-null-handling: true
+caches:
+  quotations-cache:
+    expire-after-write: 24h
+    maximum-size: 1
 
 datasources:
   default:
