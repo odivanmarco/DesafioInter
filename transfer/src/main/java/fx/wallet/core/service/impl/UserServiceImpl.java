@@ -33,17 +33,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO createUser(UserRequestDTO userDTO) {
+        if (userRepository.existsByDocument(userDTO.document())) {
+            throw new UserAlreadyExistsException("User with this document already exists");
+        }
+        if (userRepository.existsByEmail(userDTO.email())) {
+            throw new UserAlreadyExistsException("User with this email already exists");
+        }
+
         try {
-            if (userRepository.existsByDocument(userDTO.document())) {
-                throw new UserAlreadyExistsException("User with this document already exists");
-            }
-            if (userRepository.existsByEmail(userDTO.email())) {
-                throw new UserAlreadyExistsException("User with this email already exists");
-            }
-    
             var user = userMapper.toEntity(userDTO);
             var savedUser = userRepository.save(user);
-    
+
             var wallet = buildWallet(savedUser);
             walletRepository.save(wallet);
 
