@@ -3,6 +3,7 @@ package fx.wallet.infra.output.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fx.wallet.core.domain.dto.BcbQuotationResponse;
 import fx.wallet.core.exception.GetQuotationException;
+import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.annotation.Value;
 import jakarta.inject.Singleton;
 
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Singleton
 public class BcbClient {
@@ -31,21 +33,30 @@ public class BcbClient {
     }
 
     public BcbQuotationResponse getQuotation(String date) {
+        var adjustedDate = adjustDateForWeekend(date);
+        Optional<BcbQuotationResponse> quotation = fetchQuotationFromBcb(adjustedDate);
+
+        return quotation.filter(q -> q.quotations() != null && !q.quotations().isEmpty())
+                .orElseThrow(() -> new GetQuotationException("BCB API returned no quotation.", null));
+    }
+
+    @Cacheable("quotations-cache")
+    public Optional<BcbQuotationResponse> fetchQuotationFromBcb(String date) {
         try {
-            var adjustedDate = adjustDateForWeekend(date);
-            var encodedDate = URLEncoder.encode("'" + adjustedDate + "'", StandardCharsets.UTF_8.toString());
+            var encodedDate = URLEncoder.encode("'" + date + "'", StandardCharsets.UTF_8.toString());
             var url = bcbApiUrl + "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao=" + encodedDate + "&$top=100&$format=json";
-    
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .build();
-                    
+
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return objectMapper.readValue(response.body(), BcbQuotationResponse.class);
+            return Optional.of(objectMapper.readValue(response.body(), BcbQuotationResponse.class));
         } catch (IOException | InterruptedException e) {
             throw new GetQuotationException("Error fetching quotation from BCB API", e);
         }
     }
+
 
     private String adjustDateForWeekend(String date) {
         var formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
