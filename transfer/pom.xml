@@ -54,11 +54,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>io.micronaut</groupId>
-      <artifactId>micronaut-management</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>io.micronaut.data</groupId>
       <artifactId>micronaut-data-hibernate-jpa</artifactId>
       <scope>compile</scope>
@@ -97,11 +92,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut.openapi</groupId>
-      <artifactId>micronaut-openapi-annotations</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -195,17 +185,6 @@
               <groupId>io.micronaut</groupId>
               <artifactId>micronaut-http-validation</artifactId>
               <version>${micronaut.core.version}</version>
-            </path>
-            <path>
-              <groupId>io.micronaut.openapi</groupId>
-              <artifactId>micronaut-openapi</artifactId>
-              <version>${micronaut.openapi.version}</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject</artifactId>
-                </exclusion>
-              </exclusions>
             </path>
             <path>
               <groupId>io.micronaut.validation</groupId>
