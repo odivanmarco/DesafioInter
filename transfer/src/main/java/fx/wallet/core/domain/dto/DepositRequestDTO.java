@@ -1,6 +1,12 @@
 package fx.wallet.core.domain.dto;
 
 import java.math.BigDecimal;
+import lombok.Builder;
 
-public record DepositRequestDTO(String userId, String currency, BigDecimal amount) {
-} 
+@Builder
+public record DepositRequestDTO(
+    String userId, 
+    String currency, 
+    BigDecimal amount
+) {}
+
