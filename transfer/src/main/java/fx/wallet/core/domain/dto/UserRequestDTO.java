@@ -1,5 +1,8 @@
 package fx.wallet.core.domain.dto;
 
+import lombok.Builder;
+
+@Builder
 public record UserRequestDTO(
     String firstName,
     String middleName,
