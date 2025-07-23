@@ -2,6 +2,7 @@ package fx.wallet.infra.input.controller;
 
 import fx.wallet.core.domain.dto.RemittanceRequestDTO;
 import fx.wallet.core.usecase.RemittanceUseCase;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
@@ -18,7 +19,8 @@ public class RemittanceController {
     }
 
     @Post
-    public void send(@Body @Valid RemittanceRequestDTO remittanceRequest) {
+    public HttpResponse<Void> send(@Body @Valid RemittanceRequestDTO remittanceRequest) {
         remittanceUseCase.execute(remittanceRequest);
+        return HttpResponse.ok();
     }
 } 
