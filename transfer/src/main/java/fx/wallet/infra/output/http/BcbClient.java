@@ -13,6 +13,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Singleton
 public class BcbClient {
@@ -29,7 +32,8 @@ public class BcbClient {
 
     public BcbQuotationResponse getQuotation(String date) {
         try {
-            var encodedDate = URLEncoder.encode("'" + date + "'", StandardCharsets.UTF_8.toString());
+            var adjustedDate = adjustDateForWeekend(date);
+            var encodedDate = URLEncoder.encode("'" + adjustedDate + "'", StandardCharsets.UTF_8.toString());
             var url = bcbApiUrl + "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao=" + encodedDate + "&$top=100&$format=json";
     
             HttpRequest request = HttpRequest.newBuilder()
@@ -41,5 +45,18 @@ public class BcbClient {
         } catch (IOException | InterruptedException e) {
             throw new GetQuotationException("Error fetching quotation from BCB API", e);
         }
+    }
+
+    private String adjustDateForWeekend(String date) {
+        var formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        var localDate = LocalDate.parse(date, formatter);
+
+        if (localDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
+            localDate = localDate.minusDays(1);
+        } else if (localDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            localDate = localDate.minusDays(2);
+        }
+
+        return localDate.format(formatter);
     }
 }
