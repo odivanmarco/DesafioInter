@@ -5,5 +5,10 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record DepositResponseDTO(String id, BigDecimal balanceBrl, BigDecimal balanceUsd) {
+public record DepositResponseDTO(
+    String id, 
+    BigDecimal balanceBrl, 
+    BigDecimal balanceUsd,
+    String currency
+) {
 }
