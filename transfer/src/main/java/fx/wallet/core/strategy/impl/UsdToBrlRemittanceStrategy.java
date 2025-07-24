@@ -21,6 +21,7 @@ public class UsdToBrlRemittanceStrategy extends RemittanceProcessor implements R
     @Override
     public void execute(RemittanceRequestDTO remittanceRequest) {
         final var sender = getUser(remittanceRequest.senderId());
+        validatePassword(sender, remittanceRequest.password());
         final var receiver = getUser(remittanceRequest.receiverId());
         final var senderWallet = getWallet(remittanceRequest.senderId());
         final var receiverWallet = getWallet(remittanceRequest.receiverId());

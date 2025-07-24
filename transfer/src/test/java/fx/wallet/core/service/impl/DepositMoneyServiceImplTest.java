@@ -3,6 +3,7 @@ package fx.wallet.core.service.impl;
 import fx.wallet.core.domain.dto.DepositRequestDTO;
 import fx.wallet.core.domain.dto.DepositResponseDTO;
 import fx.wallet.core.exception.DepositAmountException;
+import fx.wallet.core.exception.InvalidPasswordException;
 import fx.wallet.core.exception.UserNotFoundException;
 import fx.wallet.core.exception.WalletNotFoundException;
 import fx.wallet.core.mapper.WalletMapper;
@@ -48,7 +49,7 @@ class DepositMoneyServiceImplTest {
     void shouldDepositBrlSuccessfully() {
         User user = buildUser();
         Wallet wallet = buildWallet(user);
-        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("100.00"));
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("100.00"), "password");
         DepositResponseDTO depositResponseDTO = buildDepositResponseDTO(wallet, user.getId().toString());
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -68,7 +69,7 @@ class DepositMoneyServiceImplTest {
     void shouldDepositUsdSuccessfully() {
         User user = buildUser();
         Wallet wallet = buildWallet(user);
-        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), USD, new BigDecimal("50.00"));
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), USD, new BigDecimal("50.00"), "password");
         DepositResponseDTO depositResponseDTO = buildDepositResponseDTO(wallet, user.getId().toString());
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -88,7 +89,7 @@ class DepositMoneyServiceImplTest {
     @DisplayName("Should throw UserNotFoundException when user does not exist")
     void shouldThrowUserNotFoundException() {
         UUID userId = UUID.randomUUID();
-        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(userId, BRL, new BigDecimal("100.00"));
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(userId, BRL, new BigDecimal("100.00"), "password");
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -101,7 +102,7 @@ class DepositMoneyServiceImplTest {
     @DisplayName("Should throw WalletNotFoundException when wallet does not exist")
     void shouldThrowWalletNotFoundException() {
         User user = buildUser();
-        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("100.00"));
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("100.00"), "password");
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(walletRepository.findByUserId(user.getId())).thenReturn(Optional.empty());
@@ -115,7 +116,7 @@ class DepositMoneyServiceImplTest {
     void shouldThrowDepositAmountExceptionForZeroAmount() {
         User user = buildUser();
         Wallet wallet = buildWallet(user);
-        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, BigDecimal.ZERO);
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, BigDecimal.ZERO, "password");
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(walletRepository.findByUserId(user.getId())).thenReturn(Optional.of(wallet));
@@ -129,12 +130,25 @@ class DepositMoneyServiceImplTest {
     void shouldThrowDepositAmountExceptionForNegativeAmount() {
         User user = buildUser();
         Wallet wallet = buildWallet(user);
-        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("-10.00"));
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("-10.00"), "password");
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(walletRepository.findByUserId(user.getId())).thenReturn(Optional.of(wallet));
 
         assertThrows(DepositAmountException.class, () -> depositMoneyService.depositMoney(depositRequestDTO));
+        verify(walletRepository, never()).update(any());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidPasswordException for incorrect password")
+    void shouldThrowInvalidPasswordExceptionForIncorrectPassword() {
+        User user = buildUser();
+        DepositRequestDTO depositRequestDTO = buildDepositRequestDTO(user.getId(), BRL, new BigDecimal("100.00"), "wrong_password");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        assertThrows(InvalidPasswordException.class, () -> depositMoneyService.depositMoney(depositRequestDTO));
+        verify(walletRepository, never()).findByUserId(any());
         verify(walletRepository, never()).update(any());
     }
 
@@ -160,11 +174,12 @@ class DepositMoneyServiceImplTest {
                 .build();
     }
 
-    private DepositRequestDTO buildDepositRequestDTO(UUID userId, String currency, BigDecimal amount) {
+    private DepositRequestDTO buildDepositRequestDTO(UUID userId, String currency, BigDecimal amount, String password) {
         return DepositRequestDTO.builder()
             .userId(userId.toString())
             .currency(currency)
             .amount(amount)
+            .password(password)
             .build();
     }
 

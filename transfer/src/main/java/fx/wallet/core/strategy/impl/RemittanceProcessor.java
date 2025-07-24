@@ -3,6 +3,7 @@ package fx.wallet.core.strategy.impl;
 import fx.wallet.core.exception.RemittanceValidationException;
 import fx.wallet.core.exception.UserNotFoundException;
 import fx.wallet.core.exception.WalletNotFoundException;
+import fx.wallet.core.exception.InvalidPasswordException;
 import fx.wallet.core.service.QuotationService;
 import fx.wallet.infra.repository.RemittanceRepository;
 import fx.wallet.infra.repository.UserRepository;
@@ -41,6 +42,12 @@ public abstract class RemittanceProcessor {
     protected Wallet getWallet(String userId) {
         return walletRepository.findByUserId(UUID.fromString(userId))
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found for user: " + userId));
+    }
+
+    protected void validatePassword(User user, String password) {
+        if (!user.getPassword().equals(password)) {
+            throw new InvalidPasswordException("Invalid password");
+        }
     }
 
     protected void validateDailyLimit(User sender, BigDecimal amount) {
