@@ -4,6 +4,7 @@ import fx.wallet.core.domain.dto.QuotationDTO;
 import fx.wallet.core.domain.dto.RemittanceRequestDTO;
 import fx.wallet.core.domain.dto.BcbQuotationResponse;
 import fx.wallet.core.exception.RemittanceValidationException;
+import fx.wallet.core.exception.InvalidPasswordException;
 import fx.wallet.core.service.QuotationService;
 import fx.wallet.infra.repository.RemittanceRepository;
 import fx.wallet.infra.repository.UserRepository;
@@ -65,7 +66,7 @@ public class BrlToUsdRemittanceStrategyTest {
     @Test
     @DisplayName("Should execute BRL to USD remittance successfully")
     void shouldExecuteBrlToUsdRemittanceSuccessfully() {
-        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("500.00"));
+        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("500.00"), "password");
         BcbQuotationResponse quotationResponse = buildQuotationResponse();
 
         when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
@@ -87,7 +88,7 @@ public class BrlToUsdRemittanceStrategyTest {
     @Test
     @DisplayName("Should throw RemittanceValidationException for insufficient BRL balance")
     void shouldThrowRemittanceValidationExceptionForInsufficientBrlBalance() {
-        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("1500.00"));
+        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("1500.00"), "password");
 
         when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
         when(userRepository.findById(receiver.getId())).thenReturn(Optional.of(receiver));
@@ -104,7 +105,7 @@ public class BrlToUsdRemittanceStrategyTest {
     @DisplayName("Should throw RemittanceValidationException for exceeding daily limit")
     void shouldThrowRemittanceValidationExceptionForExceedingDailyLimit() {
         sender.setDailyLimit(new BigDecimal("400.00"));
-        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("500.00"));
+        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("500.00"), "password");
 
         when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
         when(userRepository.findById(receiver.getId())).thenReturn(Optional.of(receiver));
@@ -115,6 +116,16 @@ public class BrlToUsdRemittanceStrategyTest {
         assertThrows(RemittanceValidationException.class, () -> brlToUsdRemittanceStrategy.execute(request));
         verify(walletRepository, never()).update(any());
         verify(remittanceRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidPasswordException for incorrect password")
+    void shouldThrowInvalidPasswordExceptionForIncorrectPassword() {
+        RemittanceRequestDTO request = buildRemittanceRequest(sender.getId(), receiver.getId(), new BigDecimal("100.00"), "wrong_password");
+
+        when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
+
+        assertThrows(InvalidPasswordException.class, () -> brlToUsdRemittanceStrategy.execute(request));
     }
 
     private User buildUser(BigDecimal dailyLimit) {
@@ -139,11 +150,12 @@ public class BrlToUsdRemittanceStrategyTest {
                 .build();
     }
 
-    private RemittanceRequestDTO buildRemittanceRequest(UUID senderId, UUID receiverId, BigDecimal amount) {
+    private RemittanceRequestDTO buildRemittanceRequest(UUID senderId, UUID receiverId, BigDecimal amount, String password) {
         return RemittanceRequestDTO.builder()
                 .senderId(senderId.toString())
                 .receiverId(receiverId.toString())
                 .amount(amount)
+                .password(password)
                 .transferType(TransferType.BRL_TO_USD)
                 .build();
     }
