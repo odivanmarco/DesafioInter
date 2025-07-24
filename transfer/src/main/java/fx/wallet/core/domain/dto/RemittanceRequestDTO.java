@@ -12,5 +12,6 @@ public record RemittanceRequestDTO(
     String senderId, 
     String receiverId, 
     BigDecimal amount,
-    TransferType transferType
+    TransferType transferType,
+    String password
 ) { } 

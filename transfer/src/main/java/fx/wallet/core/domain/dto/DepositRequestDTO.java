@@ -7,6 +7,7 @@ import lombok.Builder;
 public record DepositRequestDTO(
     String userId, 
     String currency, 
-    BigDecimal amount
+    BigDecimal amount,
+    String password
 ) {}
 
