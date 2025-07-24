@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 public record DepositResponseDTO(
     String id, 
     BigDecimal balanceBrl, 
-    BigDecimal balanceUsd,
-    String currency
+    BigDecimal balanceUsd
 ) {
 }

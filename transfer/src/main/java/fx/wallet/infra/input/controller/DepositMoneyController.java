@@ -20,7 +20,7 @@ public class DepositMoneyController {
 
     @Post
     public HttpResponse<DepositResponseDTO> deposit(@Body DepositRequestDTO depositRequestDTO) {
-        var walletDTO = depositMoneyService.depositMoney(depositRequestDTO);
-        return HttpResponse.ok(walletDTO);
+        var depositResponseDTO = depositMoneyService.depositMoney(depositRequestDTO);
+        return HttpResponse.ok(depositResponseDTO);
     }
 } 
