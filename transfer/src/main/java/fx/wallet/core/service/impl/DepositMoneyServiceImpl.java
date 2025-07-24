@@ -3,6 +3,7 @@ package fx.wallet.core.service.impl;
 import fx.wallet.core.domain.dto.DepositRequestDTO;
 import fx.wallet.core.domain.dto.DepositResponseDTO;
 import fx.wallet.core.exception.DepositAmountException;
+import fx.wallet.core.exception.InvalidPasswordException;
 import fx.wallet.core.exception.UserNotFoundException;
 import fx.wallet.core.exception.WalletNotFoundException;
 import fx.wallet.core.mapper.WalletMapper;
@@ -38,6 +39,11 @@ public class DepositMoneyServiceImpl implements DepositMoneyService {
     @Transactional
     public DepositResponseDTO depositMoney(DepositRequestDTO dto) {
         User user = userRepository.findById(UUID.fromString(dto.userId())).orElseThrow(() -> new UserNotFoundException("User not found with id: " + dto.userId()));
+
+        if (!user.getPassword().equals(dto.password())) {
+            throw new InvalidPasswordException("Invalid password");
+        }
+
         Wallet wallet = walletRepository.findByUserId(user.getId()).orElseThrow(() -> new WalletNotFoundException("Wallet not found for user id: " + dto.userId()));
 
         if (dto.amount().compareTo(BigDecimal.ZERO) <= 0) {
