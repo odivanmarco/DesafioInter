@@ -50,7 +50,7 @@ A aplicação está configurada para usar um banco de dados **H2 em memória**. 
 - **Schema**: O schema do banco de dados é criado e gerenciado automaticamente pelo **Flyway**. Os scripts de migração estão localizados em `src/main/resources/db/migration`.
 
 
-**IMPORTANTE:** Na raiz do projeto deixarei disponível uma Collection do Postman para os testes das funcionalidades no diretório postman
+**IMPORTANTE:** Na raiz do projeto deixarei disponível uma Collection do Postman chamdada DesafioInter.postman_collection.json para os testes das funcionalidades no diretório postman
 
 
 # Documentação Técnica - Wallet FX
@@ -143,3 +143,12 @@ A aplicação utiliza um banco de dados H2 em memória para fins de desenvolvime
 ## Comunicação Externa
 
 Para obter cotações de moedas, a aplicação consome a API do Banco Central do Brasil através de um cliente declarativo do Micronaut (`BcbClient`). As cotações são cacheadas para reduzir a latência e o número de chamadas à API externa.
+
+## Pontos de melhoria
+
+O projeto foi realizado com um pouco de pressa, por falta de tempo, pois atualmente trabalho e estou com muitas demandas e pessoas que dependem do meu apoio, então algumas coisas ficaram sem poderem ser realizadas como:
+
+- Implementar o swagger, tanto para criar as rotas quanto para facilitar os testes
+- Implementar um JWT para segurança das requisições
+- Maiores validações no serviço de tranferência de remessas
+- Retornos das rotas mais descritivos e com status HTTP melhores
