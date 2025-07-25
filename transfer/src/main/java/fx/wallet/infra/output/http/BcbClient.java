@@ -33,11 +33,29 @@ public class BcbClient {
     }
 
     public BcbQuotationResponse getQuotation(String date) {
-        var adjustedDate = adjustDateForWeekend(date);
-        Optional<BcbQuotationResponse> quotation = fetchQuotationFromBcb(adjustedDate);
+        var formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-        return quotation.filter(q -> q.quotations() != null && !q.quotations().isEmpty())
-                .orElseThrow(() -> new GetQuotationException("BCB API returned no quotation.", null));
+        String adjustedDateStr = adjustDateForWeekend(date);
+        Optional<BcbQuotationResponse> quotationOpt = fetchQuotationFromBcb(adjustedDateStr);
+
+        if (quotationOpt.isPresent() && quotationOpt.get().quotations() != null && !quotationOpt.get().quotations().isEmpty()) {
+            return quotationOpt.get();
+        }
+
+        LocalDate initialAdjustedDate = LocalDate.parse(adjustedDateStr, formatter);
+        LocalDate previousBusinessDay;
+
+        if (initialAdjustedDate.getDayOfWeek() == DayOfWeek.MONDAY) {
+            previousBusinessDay = initialAdjustedDate.minusDays(3);
+        } else {
+            previousBusinessDay = initialAdjustedDate.minusDays(1);
+        }
+
+        String retryDateStr = previousBusinessDay.format(formatter);
+        Optional<BcbQuotationResponse> retryQuotationOpt = fetchQuotationFromBcb(retryDateStr);
+
+        return retryQuotationOpt.filter(q -> q.quotations() != null && !q.quotations().isEmpty())
+                .orElseThrow(() -> new GetQuotationException("BCB API returned no quotation for the requested date or the previous business day."));
     }
 
     @Cacheable("quotations-cache")
