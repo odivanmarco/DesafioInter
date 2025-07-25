@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "3e57b91d-9859-4455-a28e-80e3afa96126",
+		"name": "DesafioInter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23451959"
+	},
+	"item": [
+		{
+			"name": "GET quotations",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/quotation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"quotation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"Odivan\", \n  \"middleName\": \"Marcos\",\n  \"lastName\": \"Gomes\",\n  \"email\": \"odivanmarcos@gmail.com\",\n  \"password\": \"senhaSegura123\", \n  \"document\": \"12345678903\",\n  \"userType\": \"PJ\" //Valores aceitos PF ou PJ\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST remessas",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"senderId\": \"56c70474-82a2-4d79-8145-8e47340815b3\", //UUID de quem irá enviar\n    \"receiverId\": \"ccebd3b3-3aa6-44b3-a2bf-308516c3b0c2\", //UUID de quem irá receber\n    \"amount\": 10000,\n    \"password\": \"senhaSegura123\", //Senha de quem irá enviar\n    \"transferType\": \"BRL_TO_USD\" //Valores BRL_TO_USD, BRL_TO_BRL, USD_TO_BRL e USD_TO_USD\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/remittances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"remittances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:uuid",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":uuid"
+					],
+					"variable": [
+						{
+							"key": "uuid",
+							"value": "ccebd3b3-3aa6-44b3-a2bf-308516c3b0c2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST deposit",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"56c70474-82a2-4d79-8145-8e47340815b3\",\n    \"currency\": \"BRL\",\n    \"password\": \"senhaSegura123\",\n    \"amount\": 100000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/deposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
