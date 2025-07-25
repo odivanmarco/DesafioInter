@@ -5,4 +5,8 @@ public class GetQuotationException extends RuntimeException {
     public GetQuotationException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public GetQuotationException(String message) {
+        super(message);
+    }
 }
